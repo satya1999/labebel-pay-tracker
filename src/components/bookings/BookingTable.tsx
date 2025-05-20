@@ -1,25 +1,14 @@
 
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
 import {
   Table,
   TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
 } from '@/components/ui/table';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
 import { Booking } from '@/types';
-import { Search } from 'lucide-react';
+import BookingTableFilters from './BookingTableFilters';
+import BookingTableHeader from './BookingTableHeader';
+import BookingTableRow from './BookingTableRow';
+import EmptyBookingState from './EmptyBookingState';
 
 // Sample data - this would come from API in real app
 const BOOKINGS: Booking[] = [
@@ -138,94 +127,25 @@ const BookingTable = ({ showCancelled = false }: BookingTableProps) => {
 
   return (
     <div className="space-y-4">
-      <div className="flex flex-col sm:flex-row gap-2 justify-between">
-        <div className="flex w-full max-w-sm items-center space-x-2">
-          <Input
-            placeholder="Search by name, phone, or seat..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full"
-          />
-          <Button type="submit" size="icon">
-            <Search className="h-4 w-4" />
-          </Button>
-        </div>
-        <div className="flex items-center gap-2">
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="outline">Filter</Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuItem>All Trips</DropdownMenuItem>
-              <DropdownMenuItem>Trip 1</DropdownMenuItem>
-              <DropdownMenuItem>Trip 2</DropdownMenuItem>
-              <DropdownMenuItem>Trip 3</DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-          <Button variant="default" asChild>
-            <Link to="/bookings/new">Add Booking</Link>
-          </Button>
-        </div>
-      </div>
+      <BookingTableFilters 
+        searchTerm={searchTerm}
+        setSearchTerm={setSearchTerm}
+      />
       
       <div className="rounded-md border overflow-x-auto">
         <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead className="whitespace-nowrap">SL.</TableHead>
-              <TableHead className="whitespace-nowrap">Name</TableHead>
-              <TableHead className="whitespace-nowrap">Adv.</TableHead>
-              <TableHead className="whitespace-nowrap">Rest</TableHead>
-              <TableHead className="whitespace-nowrap">D.</TableHead>
-              <TableHead className="whitespace-nowrap">Cont.</TableHead>
-              <TableHead className="whitespace-nowrap">Relativ. No.</TableHead>
-              <TableHead className="whitespace-nowrap">Seat N</TableHead>
-              <TableHead className="whitespace-nowrap">Payment</TableHead>
-              <TableHead className="whitespace-nowrap">Via (Cash/UPI)</TableHead>
-              <TableHead className="whitespace-nowrap">Rest / Full</TableHead>
-              <TableHead className="whitespace-nowrap">A/C Name</TableHead>
-              <TableHead className="text-right">Actions</TableHead>
-            </TableRow>
-          </TableHeader>
+          <BookingTableHeader />
           <TableBody>
             {filteredBookings.length > 0 ? (
               filteredBookings.map((booking, index) => (
-                <TableRow key={booking.id}>
-                  <TableCell>{index + 1}</TableCell>
-                  <TableCell className="font-medium">{booking.passengerName}</TableCell>
-                  <TableCell>₹{booking.advancePaid}</TableCell>
-                  <TableCell>₹{booking.remainingAmount}</TableCell>
-                  <TableCell>₹{booking.discountGiven || 0}</TableCell>
-                  <TableCell>{booking.contactNumber}</TableCell>
-                  <TableCell>{booking.relativeContactNumber || '-'}</TableCell>
-                  <TableCell>{booking.seatNumber}</TableCell>
-                  <TableCell>
-                    {booking.isPaymentCollected ? (
-                      <Badge variant="outline" className="bg-success-light text-success">
-                        Collected
-                      </Badge>
-                    ) : (
-                      <Badge variant="outline" className="bg-warning-light text-warning">
-                        Pending
-                      </Badge>
-                    )}
-                  </TableCell>
-                  <TableCell>{booking.paymentMode}</TableCell>
-                  <TableCell>{booking.remainingAmount > 0 ? 'Rest' : 'Full'}</TableCell>
-                  <TableCell>{booking.paymentTransferredTo}</TableCell>
-                  <TableCell className="text-right">
-                    <Button variant="ghost" size="sm" asChild>
-                      <Link to={`/bookings/${booking.id}`}>View</Link>
-                    </Button>
-                  </TableCell>
-                </TableRow>
+                <BookingTableRow 
+                  key={booking.id}
+                  booking={booking}
+                  index={index} 
+                />
               ))
             ) : (
-              <TableRow>
-                <TableCell colSpan={13} className="text-center h-24">
-                  No bookings found
-                </TableCell>
-              </TableRow>
+              <EmptyBookingState />
             )}
           </TableBody>
         </Table>
