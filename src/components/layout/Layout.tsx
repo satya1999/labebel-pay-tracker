@@ -13,7 +13,6 @@ const Layout = () => {
   return (
     <SidebarProvider
       defaultOpen={!isMobile}
-      collapsible="icon"
       onOpenChange={setCollapsed}
     >
       <div className="min-h-screen flex flex-col">
