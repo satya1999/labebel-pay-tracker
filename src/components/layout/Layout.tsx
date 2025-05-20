@@ -5,7 +5,7 @@ import { SidebarProvider } from '@/components/ui/sidebar';
 import Header from './Header';
 import { AppSidebar } from './Sidebar';
 import { useIsMobile } from '@/hooks/use-mobile';
-import { toast } from '@/components/ui/use-toast';
+import { toast } from 'sonner';
 
 const Layout = () => {
   const [collapsed, setCollapsed] = useState(false);
@@ -21,11 +21,13 @@ const Layout = () => {
 
   // Show welcome toast on first render
   useEffect(() => {
-    toast({
-      title: "Welcome to Labebel Payment Tracker",
-      description: "Manage your travel bookings and payments efficiently",
-      duration: 5000,
-    });
+    toast(
+      "Welcome to Ananda Rath Payment Tracker", 
+      {
+        description: "Manage your travel bookings and payments efficiently",
+        duration: 5000,
+      }
+    );
   }, []);
 
   return (
@@ -39,7 +41,7 @@ const Layout = () => {
         <div className="flex-1 flex w-full">
           <AppSidebar collapsed={collapsed} />
           
-          <main className="flex-1 overflow-y-auto px-4 py-6 md:px-6 bg-background transition-all duration-200">
+          <main className="flex-1 overflow-y-auto px-4 py-6 md:px-6 lg:px-8 bg-background transition-all duration-200">
             <div className="max-w-7xl mx-auto">
               <Outlet />
             </div>
