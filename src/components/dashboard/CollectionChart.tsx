@@ -1,45 +1,44 @@
 
 import React from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
-// Sample data - this would come from API in a real app
+// Sample data for the chart
 const data = [
-  { name: 'Jan', collected: 4000, pending: 2400 },
-  { name: 'Feb', collected: 3000, pending: 1398 },
-  { name: 'Mar', collected: 2000, pending: 9800 },
-  { name: 'Apr', collected: 2780, pending: 3908 },
-  { name: 'May', collected: 1890, pending: 4800 },
-  { name: 'Jun', collected: 2390, pending: 3800 },
-  { name: 'Jul', collected: 3490, pending: 4300 },
+  { month: 'Jan', collected: 35000, pending: 15000 },
+  { month: 'Feb', collected: 42000, pending: 18000 },
+  { month: 'Mar', collected: 28000, pending: 12000 },
+  { month: 'Apr', collected: 45000, pending: 10000 },
+  { month: 'May', collected: 56000, pending: 24000 },
+  { month: 'Jun', collected: 78000, pending: 32000 },
 ];
 
 const CollectionChart = () => {
   return (
-    <Card className="col-span-4">
+    <Card className="col-span-7 md:col-span-4">
       <CardHeader>
         <CardTitle>Payment Collections</CardTitle>
-        <CardDescription>Payment collection trends over time</CardDescription>
       </CardHeader>
-      <CardContent className="pl-2">
+      <CardContent>
         <div className="h-[300px]">
           <ResponsiveContainer width="100%" height="100%">
-            <AreaChart
+            <BarChart
               data={data}
-              margin={{
-                top: 10,
-                right: 30,
-                left: 0,
-                bottom: 0,
-              }}
+              margin={{ top: 0, right: 0, left: -20, bottom: 0 }}
             >
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="name" />
-              <YAxis />
-              <Tooltip />
-              <Area type="monotone" dataKey="collected" stackId="1" stroke="#0EA5E9" fill="#0EA5E9" fillOpacity={0.6} />
-              <Area type="monotone" dataKey="pending" stackId="1" stroke="#F59E0B" fill="#F59E0B" fillOpacity={0.6} />
-            </AreaChart>
+              <CartesianGrid strokeDasharray="3 3" vertical={false} />
+              <XAxis dataKey="month" />
+              <YAxis 
+                tickFormatter={(value) => `₹${value/1000}k`} 
+                width={60}
+              />
+              <Tooltip 
+                formatter={(value) => [`₹${value}`, '']}
+                labelFormatter={(label) => `Month: ${label}`}
+              />
+              <Bar name="Collected" dataKey="collected" stackId="a" fill="#8884d8" radius={[4, 4, 0, 0]} />
+              <Bar name="Pending" dataKey="pending" stackId="a" fill="#ffc658" radius={[4, 4, 0, 0]} />
+            </BarChart>
           </ResponsiveContainer>
         </div>
       </CardContent>

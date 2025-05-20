@@ -44,12 +44,12 @@ const Dashboard = () => {
         <StatsCard 
           title="Collected Amount" 
           value={formatCurrency(dashboardStats.collectedAmount)} 
-          className="border-l-4 border-success"
+          className="border-l-4 border-green-500"
         />
         <StatsCard 
           title="Pending Amount" 
           value={formatCurrency(dashboardStats.pendingAmount)} 
-          className="border-l-4 border-warning"
+          className="border-l-4 border-yellow-500"
         />
       </div>
       

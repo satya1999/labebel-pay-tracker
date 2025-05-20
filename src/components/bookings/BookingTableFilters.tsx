@@ -2,7 +2,7 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Search } from 'lucide-react';
+import { Search, Filter } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import {
   DropdownMenu,
@@ -21,31 +21,34 @@ const BookingTableFilters = ({
   setSearchTerm,
 }: BookingTableFiltersProps) => {
   return (
-    <div className="flex flex-col sm:flex-row gap-2 justify-between">
-      <div className="flex w-full max-w-sm items-center space-x-2">
-        <Input
-          placeholder="Search by name, phone, or seat..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          className="w-full"
-        />
-        <Button type="submit" size="icon">
-          <Search className="h-4 w-4" />
-        </Button>
+    <div className="flex flex-col sm:flex-row gap-4 justify-between">
+      <div className="flex flex-1 items-center space-x-2">
+        <div className="relative flex-1 max-w-sm">
+          <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+          <Input
+            placeholder="Search by name, phone, or seat..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="pl-8"
+          />
+        </div>
       </div>
       <div className="flex items-center gap-2">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="outline">Filter</Button>
+            <Button variant="outline" size="sm" className="flex items-center gap-1">
+              <Filter className="h-4 w-4" />
+              <span>Filter</span>
+            </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuItem>All Trips</DropdownMenuItem>
-            <DropdownMenuItem>Trip 1</DropdownMenuItem>
-            <DropdownMenuItem>Trip 2</DropdownMenuItem>
-            <DropdownMenuItem>Trip 3</DropdownMenuItem>
+            <DropdownMenuItem>Manali Adventure</DropdownMenuItem>
+            <DropdownMenuItem>Goa Beach Vacation</DropdownMenuItem>
+            <DropdownMenuItem>Kerala Backwaters Tour</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
-        <Button variant="default" asChild>
+        <Button size="sm" asChild>
           <Link to="/bookings/new">Add Booking</Link>
         </Button>
       </div>

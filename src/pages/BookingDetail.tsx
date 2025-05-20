@@ -139,11 +139,11 @@ const BookingDetail = () => {
                 <p className="text-sm text-muted-foreground">Payment Status</p>
                 <div className="flex items-center gap-2 mt-1">
                   {booking.isPaymentCollected ? (
-                    <Badge variant="outline" className="bg-success-light text-success">
+                    <Badge className="bg-green-100 text-green-800 hover:bg-green-200">
                       Collected
                     </Badge>
                   ) : (
-                    <Badge variant="outline" className="bg-warning-light text-warning">
+                    <Badge variant="outline" className="bg-yellow-50 text-yellow-800 border-yellow-200">
                       Pending
                     </Badge>
                   )}

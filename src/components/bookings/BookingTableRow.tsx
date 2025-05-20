@@ -14,31 +14,37 @@ interface BookingTableRowProps {
 const BookingTableRow = ({ booking, index }: BookingTableRowProps) => {
   return (
     <TableRow key={booking.id}>
-      <TableCell>{index + 1}</TableCell>
-      <TableCell className="font-medium">{booking.passengerName}</TableCell>
-      <TableCell>₹{booking.advancePaid}</TableCell>
-      <TableCell>₹{booking.remainingAmount}</TableCell>
-      <TableCell>₹{booking.discountGiven || 0}</TableCell>
-      <TableCell>{booking.contactNumber}</TableCell>
-      <TableCell>{booking.relativeContactNumber || '-'}</TableCell>
-      <TableCell>{booking.seatNumber}</TableCell>
+      <TableCell className="font-medium">{index + 1}</TableCell>
       <TableCell>
+        <Link to={`/bookings/${booking.id}`} className="font-medium hover:underline">
+          {booking.passengerName}
+        </Link>
+      </TableCell>
+      <TableCell className="hidden md:table-cell">{booking.contactNumber}</TableCell>
+      <TableCell className="hidden md:table-cell">{booking.seatNumber}</TableCell>
+      <TableCell className="text-right">
+        <div>₹{booking.totalAmount}</div>
+        <div className="text-xs text-muted-foreground">
+          {booking.advancePaid > 0 ? `₹${booking.advancePaid} paid` : 'No advance'}
+        </div>
+      </TableCell>
+      <TableCell className="hidden lg:table-cell">
         {booking.isPaymentCollected ? (
-          <Badge variant="outline" className="bg-success-light text-success">
+          <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
             Collected
           </Badge>
         ) : (
-          <Badge variant="outline" className="bg-warning-light text-warning">
+          <Badge variant="outline" className="bg-yellow-50 text-yellow-700 border-yellow-200">
             Pending
           </Badge>
         )}
       </TableCell>
-      <TableCell>{booking.paymentMode}</TableCell>
-      <TableCell>{booking.remainingAmount > 0 ? 'Rest' : 'Full'}</TableCell>
-      <TableCell>{booking.paymentTransferredTo}</TableCell>
-      <TableCell className="text-right">
+      <TableCell className="text-right space-x-2">
         <Button variant="ghost" size="sm" asChild>
           <Link to={`/bookings/${booking.id}`}>View</Link>
+        </Button>
+        <Button variant="ghost" size="sm" asChild>
+          <Link to={`/bookings/edit/${booking.id}`}>Edit</Link>
         </Button>
       </TableCell>
     </TableRow>

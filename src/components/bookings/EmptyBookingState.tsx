@@ -8,8 +8,8 @@ import { PlusCircle } from 'lucide-react';
 const EmptyBookingState = () => {
   return (
     <TableRow>
-      <TableCell colSpan={13} className="h-24 text-center">
-        <div className="flex flex-col items-center justify-center space-y-3 py-4">
+      <TableCell colSpan={7} className="h-24 text-center">
+        <div className="flex flex-col items-center justify-center space-y-3 py-6">
           <div className="text-muted-foreground">
             No bookings found
           </div>
