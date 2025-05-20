@@ -168,34 +168,38 @@ const BookingTable = ({ showCancelled = false }: BookingTableProps) => {
         </div>
       </div>
       
-      <div className="rounded-md border">
+      <div className="rounded-md border overflow-x-auto">
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Passenger</TableHead>
-              <TableHead className="hidden md:table-cell">Contact</TableHead>
-              <TableHead>Seat</TableHead>
-              <TableHead className="hidden lg:table-cell">Payment Mode</TableHead>
-              <TableHead className="text-right">Amount</TableHead>
-              <TableHead className="text-center">Status</TableHead>
+              <TableHead className="whitespace-nowrap">SL.</TableHead>
+              <TableHead className="whitespace-nowrap">Name</TableHead>
+              <TableHead className="whitespace-nowrap">Adv.</TableHead>
+              <TableHead className="whitespace-nowrap">Rest</TableHead>
+              <TableHead className="whitespace-nowrap">D.</TableHead>
+              <TableHead className="whitespace-nowrap">Cont.</TableHead>
+              <TableHead className="whitespace-nowrap">Relativ. No.</TableHead>
+              <TableHead className="whitespace-nowrap">Seat N</TableHead>
+              <TableHead className="whitespace-nowrap">Payment</TableHead>
+              <TableHead className="whitespace-nowrap">Via (Cash/UPI)</TableHead>
+              <TableHead className="whitespace-nowrap">Rest / Full</TableHead>
+              <TableHead className="whitespace-nowrap">A/C Name</TableHead>
               <TableHead className="text-right">Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {filteredBookings.length > 0 ? (
-              filteredBookings.map((booking) => (
+              filteredBookings.map((booking, index) => (
                 <TableRow key={booking.id}>
+                  <TableCell>{index + 1}</TableCell>
                   <TableCell className="font-medium">{booking.passengerName}</TableCell>
-                  <TableCell className="hidden md:table-cell">{booking.contactNumber}</TableCell>
+                  <TableCell>₹{booking.advancePaid}</TableCell>
+                  <TableCell>₹{booking.remainingAmount}</TableCell>
+                  <TableCell>₹{booking.discountGiven || 0}</TableCell>
+                  <TableCell>{booking.contactNumber}</TableCell>
+                  <TableCell>{booking.relativeContactNumber || '-'}</TableCell>
                   <TableCell>{booking.seatNumber}</TableCell>
-                  <TableCell className="hidden lg:table-cell">{booking.paymentMode}</TableCell>
-                  <TableCell className="text-right">
-                    <div>₹{booking.totalAmount}</div>
-                    <div className="text-xs text-muted-foreground">
-                      Paid: ₹{booking.advancePaid}
-                    </div>
-                  </TableCell>
-                  <TableCell className="text-center">
+                  <TableCell>
                     {booking.isPaymentCollected ? (
                       <Badge variant="outline" className="bg-success-light text-success">
                         Collected
@@ -206,6 +210,9 @@ const BookingTable = ({ showCancelled = false }: BookingTableProps) => {
                       </Badge>
                     )}
                   </TableCell>
+                  <TableCell>{booking.paymentMode}</TableCell>
+                  <TableCell>{booking.remainingAmount > 0 ? 'Rest' : 'Full'}</TableCell>
+                  <TableCell>{booking.paymentTransferredTo}</TableCell>
                   <TableCell className="text-right">
                     <Button variant="ghost" size="sm" asChild>
                       <Link to={`/bookings/${booking.id}`}>View</Link>
@@ -215,7 +222,7 @@ const BookingTable = ({ showCancelled = false }: BookingTableProps) => {
               ))
             ) : (
               <TableRow>
-                <TableCell colSpan={7} className="text-center h-24">
+                <TableCell colSpan={13} className="text-center h-24">
                   No bookings found
                 </TableCell>
               </TableRow>
