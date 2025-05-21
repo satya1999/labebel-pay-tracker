@@ -34,6 +34,7 @@ const BOOKINGS: Booking[] = [
     age: 35,
     gender: 'M',
     bloodGroup: 'B+',
+    relativeContactNumber: '8765432101',
   },
   {
     id: '2',
@@ -57,6 +58,7 @@ const BOOKINGS: Booking[] = [
     age: 28,
     gender: 'F',
     bloodGroup: 'O+',
+    relativeContactNumber: '7654321098',
   },
   {
     id: '3',
@@ -80,6 +82,7 @@ const BOOKINGS: Booking[] = [
     age: 42,
     gender: 'M',
     bloodGroup: 'A-',
+    relativeContactNumber: '6543210987',
   },
   {
     id: '4',
@@ -103,6 +106,7 @@ const BOOKINGS: Booking[] = [
     age: 31,
     gender: 'F',
     bloodGroup: 'AB+',
+    relativeContactNumber: '5432109876',
   },
   {
     id: '5',
@@ -126,6 +130,7 @@ const BOOKINGS: Booking[] = [
     age: 39,
     gender: 'M',
     bloodGroup: 'B-',
+    relativeContactNumber: '4321098765',
   },
 ];
 
@@ -163,23 +168,25 @@ const BookingTable = ({ showCancelled = false }: BookingTableProps) => {
         setSearchTerm={setSearchTerm}
       />
       
-      <div className="rounded-md border overflow-x-auto">
-        <Table>
-          <BookingTableHeader />
-          <TableBody>
-            {filteredBookings.length > 0 ? (
-              filteredBookings.map((booking, index) => (
-                <BookingTableRow 
-                  key={booking.id}
-                  booking={booking}
-                  index={index} 
-                />
-              ))
-            ) : (
-              <EmptyBookingState />
-            )}
-          </TableBody>
-        </Table>
+      <div className="rounded-md border overflow-hidden bg-white dark:bg-gray-800 shadow-sm">
+        <div className="overflow-x-auto">
+          <Table>
+            <BookingTableHeader />
+            <TableBody>
+              {filteredBookings.length > 0 ? (
+                filteredBookings.map((booking, index) => (
+                  <BookingTableRow 
+                    key={booking.id}
+                    booking={booking}
+                    index={index} 
+                  />
+                ))
+              ) : (
+                <EmptyBookingState />
+              )}
+            </TableBody>
+          </Table>
+        </div>
       </div>
     </div>
   );

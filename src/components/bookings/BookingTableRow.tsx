@@ -15,25 +15,26 @@ interface BookingTableRowProps {
 const BookingTableRow = ({ booking, index }: BookingTableRowProps) => {
   // Format booking date if available
   const formattedBookingDate = booking.bookingDate 
-    ? new Date(booking.bookingDate).toLocaleDateString() 
+    ? format(new Date(booking.bookingDate), 'dd MMM yyyy')
     : '-';
 
   return (
-    <TableRow key={booking.id}>
+    <TableRow key={booking.id} className="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
       <TableCell className="font-medium">{index + 1}</TableCell>
       <TableCell>
-        <Link to={`/bookings/${booking.id}`} className="font-medium hover:underline">
+        <Link to={`/bookings/${booking.id}`} className="font-medium text-purple-700 hover:text-purple-900 hover:underline">
           {booking.passengerName}
         </Link>
+        <div className="text-xs text-muted-foreground">{formattedBookingDate}</div>
       </TableCell>
-      <TableCell className="hidden md:table-cell">{formattedBookingDate}</TableCell>
       <TableCell className="hidden md:table-cell">{booking.seatNumber}</TableCell>
       <TableCell className="hidden lg:table-cell">{booking.contactNumber}</TableCell>
-      <TableCell className="text-right">
-        ₹{booking.advancePaid}
+      <TableCell className="hidden xl:table-cell">{booking.aadharCardNumber || '-'}</TableCell>
+      <TableCell className="text-right font-medium">
+        ₹{booking.advancePaid.toLocaleString()}
       </TableCell>
       <TableCell className="text-right hidden xl:table-cell">
-        ₹{booking.remainingAmount}
+        ₹{booking.remainingAmount.toLocaleString()}
       </TableCell>
       <TableCell className="hidden xl:table-cell">
         {booking.isPaymentCollected ? (
@@ -46,13 +47,15 @@ const BookingTableRow = ({ booking, index }: BookingTableRowProps) => {
           </Badge>
         )}
       </TableCell>
-      <TableCell className="text-right space-x-2">
-        <Button variant="ghost" size="sm" asChild>
-          <Link to={`/bookings/${booking.id}`}>View</Link>
-        </Button>
-        <Button variant="ghost" size="sm" asChild>
-          <Link to={`/bookings/edit/${booking.id}`}>Edit</Link>
-        </Button>
+      <TableCell className="text-right">
+        <div className="flex justify-end gap-2">
+          <Button variant="ghost" size="sm" asChild className="text-purple-600 hover:text-purple-800 hover:bg-purple-50">
+            <Link to={`/bookings/${booking.id}`}>View</Link>
+          </Button>
+          <Button variant="ghost" size="sm" asChild className="text-purple-600 hover:text-purple-800 hover:bg-purple-50">
+            <Link to={`/bookings/edit/${booking.id}`}>Edit</Link>
+          </Button>
+        </div>
       </TableCell>
     </TableRow>
   );

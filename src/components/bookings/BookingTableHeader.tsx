@@ -4,11 +4,10 @@ import { TableHeader, TableRow, TableHead } from '@/components/ui/table';
 
 const BookingTableHeader = () => {
   return (
-    <TableHeader className="bg-slate-50 dark:bg-slate-900">
+    <TableHeader className="bg-gray-50 dark:bg-slate-800/50">
       <TableRow>
         <TableHead className="w-[60px] font-medium">ID</TableHead>
         <TableHead className="font-medium">Passenger</TableHead>
-        <TableHead className="hidden md:table-cell font-medium">Date</TableHead>
         <TableHead className="hidden md:table-cell font-medium">Seat</TableHead>
         <TableHead className="hidden lg:table-cell font-medium">Contact</TableHead>
         <TableHead className="hidden xl:table-cell font-medium">Aadhar</TableHead>
