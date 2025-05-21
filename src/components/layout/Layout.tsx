@@ -35,16 +35,14 @@ const Layout = () => {
       defaultOpen={!isMobile}
       onOpenChange={setCollapsed}
     >
-      <div className="min-h-screen flex flex-col">
+      <div className="min-h-screen flex flex-col w-full">
         <Header />
         
         <div className="flex-1 flex w-full">
           <AppSidebar collapsed={collapsed} />
           
-          <main className="flex-1 overflow-y-auto px-4 py-6 md:px-6 lg:px-8 bg-background transition-all duration-200">
-            <div className="max-w-7xl mx-auto">
-              <Outlet />
-            </div>
+          <main className="flex-1 overflow-y-auto px-4 py-6 md:px-6 lg:px-8 bg-background transition-all duration-200 w-full">
+            <Outlet />
           </main>
         </div>
       </div>

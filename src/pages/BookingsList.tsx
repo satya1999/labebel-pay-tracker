@@ -10,7 +10,7 @@ const BookingsList = () => {
   const [activeTab, setActiveTab] = useState("active");
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 w-full">
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
         <div>
           <h1 className="text-3xl font-bold tracking-tight">Bookings</h1>
