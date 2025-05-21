@@ -34,8 +34,7 @@ const PaymentInformationSection = ({
     // Check file type
     if (!file.type.startsWith('image/')) {
       setUploadError('Please upload an image file');
-      toast({
-        title: "Invalid file type",
+      toast("Invalid file type", {
         description: "Please upload an image file (JPEG, PNG, etc.)",
         variant: "destructive"
       });
@@ -45,8 +44,7 @@ const PaymentInformationSection = ({
     // Check file size (max 5MB)
     if (file.size > 5 * 1024 * 1024) {
       setUploadError('File size exceeds 5MB limit');
-      toast({
-        title: "File too large",
+      toast("File too large", {
         description: "Maximum file size is 5MB",
         variant: "destructive"
       });
@@ -80,16 +78,14 @@ const PaymentInformationSection = ({
         // Update the form with the URL
         control._formValues.screenshotUrl = publicUrl;
         
-        toast({
-          title: "Upload Successful",
+        toast("Upload Successful", {
           description: "Payment screenshot uploaded successfully",
         });
       }
     } catch (error: any) {
       console.error("Upload error:", error);
       setUploadError(error.message);
-      toast({
-        title: "Upload failed",
+      toast("Upload failed", {
         description: error.message,
         variant: "destructive"
       });
