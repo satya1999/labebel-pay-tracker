@@ -27,7 +27,13 @@ const BOOKINGS: Booking[] = [
     isPaymentCollected: false,
     totalAmount: 5000,
     createdAt: '2023-05-15T10:30:00Z',
-    updatedAt: '2023-05-15T10:30:00Z'
+    updatedAt: '2023-05-15T10:30:00Z',
+    bookingDate: '2023-05-14T10:30:00Z',
+    aadharCardNumber: '1234 5678 9012',
+    address: '123 Main St, Bangalore',
+    age: 35,
+    gender: 'M',
+    bloodGroup: 'B+',
   },
   {
     id: '2',
@@ -44,7 +50,13 @@ const BOOKINGS: Booking[] = [
     isPaymentCollected: true,
     totalAmount: 3500,
     createdAt: '2023-05-16T09:15:00Z',
-    updatedAt: '2023-05-16T15:45:00Z'
+    updatedAt: '2023-05-16T15:45:00Z',
+    bookingDate: '2023-05-15T09:15:00Z',
+    aadharCardNumber: '9876 5432 1098',
+    address: '456 Oak St, Delhi',
+    age: 28,
+    gender: 'F',
+    bloodGroup: 'O+',
   },
   {
     id: '3',
@@ -61,7 +73,13 @@ const BOOKINGS: Booking[] = [
     isPaymentCollected: false,
     totalAmount: 5000,
     createdAt: '2023-05-17T11:45:00Z',
-    updatedAt: '2023-05-17T11:45:00Z'
+    updatedAt: '2023-05-17T11:45:00Z',
+    bookingDate: '2023-05-16T11:45:00Z',
+    aadharCardNumber: '5678 9012 3456',
+    address: '789 Pine St, Mumbai',
+    age: 42,
+    gender: 'M',
+    bloodGroup: 'A-',
   },
   {
     id: '4',
@@ -78,7 +96,13 @@ const BOOKINGS: Booking[] = [
     isPaymentCollected: false,
     totalAmount: 5000,
     createdAt: '2023-05-18T14:20:00Z',
-    updatedAt: '2023-05-18T14:20:00Z'
+    updatedAt: '2023-05-18T14:20:00Z',
+    bookingDate: '2023-05-17T14:20:00Z',
+    aadharCardNumber: '7890 1234 5678',
+    address: '321 Elm St, Chennai',
+    age: 31,
+    gender: 'F',
+    bloodGroup: 'AB+',
   },
   {
     id: '5',
@@ -95,7 +119,13 @@ const BOOKINGS: Booking[] = [
     isPaymentCollected: true,
     totalAmount: 3500,
     createdAt: '2023-05-19T08:45:00Z',
-    updatedAt: '2023-05-19T16:30:00Z'
+    updatedAt: '2023-05-19T16:30:00Z',
+    bookingDate: '2023-05-18T08:45:00Z',
+    aadharCardNumber: '2345 6789 0123',
+    address: '654 Cedar St, Hyderabad',
+    age: 39,
+    gender: 'M',
+    bloodGroup: 'B-',
   },
 ];
 
@@ -118,7 +148,8 @@ const BookingTable = ({ showCancelled = false }: BookingTableProps) => {
       return (
         booking.passengerName.toLowerCase().includes(searchLower) ||
         booking.contactNumber.includes(searchTerm) ||
-        booking.seatNumber.toLowerCase().includes(searchLower)
+        booking.seatNumber.toLowerCase().includes(searchLower) ||
+        (booking.aadharCardNumber && booking.aadharCardNumber.includes(searchTerm))
       );
     }
     

@@ -28,6 +28,13 @@ export interface Booking {
   collectedAt?: string;
   createdAt: string;
   updatedAt: string;
+  // New fields
+  bookingDate?: string;
+  aadharCardNumber?: string;
+  address?: string;
+  age?: number;
+  gender?: "M" | "F" | "Other";
+  bloodGroup?: string;
 }
 
 export interface Trip {

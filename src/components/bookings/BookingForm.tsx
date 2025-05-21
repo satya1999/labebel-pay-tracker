@@ -5,7 +5,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { toast } from "sonner";
-import { CalendarPlus, ArrowLeft, Save } from 'lucide-react';
+import { format } from "date-fns";
+import { CalendarPlus, ArrowLeft, Save, Calendar, User, DollarSign, Phone, IdCard, Users, MapPin, Cake } from 'lucide-react';
 
 import { Button } from "@/components/ui/button";
 import {
@@ -29,6 +30,8 @@ import {
 import { Switch } from "@/components/ui/switch";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Calendar as CalendarComponent } from "@/components/ui/calendar";
 
 // Define form validation schema
 const formSchema = z.object({
@@ -44,6 +47,13 @@ const formSchema = z.object({
   isPaymentCollected: z.boolean().default(false),
   isCancelled: z.boolean().default(false),
   notes: z.string().optional(),
+  // New fields
+  bookingDate: z.date().optional(),
+  aadharCardNumber: z.string().optional(),
+  address: z.string().optional(),
+  age: z.coerce.number().min(0).optional(),
+  gender: z.enum(["M", "F", "Other"]).optional(),
+  bloodGroup: z.string().optional(),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -71,6 +81,12 @@ const BookingForm = ({ bookingId }: BookingFormProps) => {
         isPaymentCollected: false,
         isCancelled: false,
         notes: "",
+        bookingDate: new Date(),
+        aadharCardNumber: "",
+        address: "",
+        age: 0,
+        gender: "M",
+        bloodGroup: "",
       } 
     : {
         advancePaid: 0,
@@ -78,6 +94,7 @@ const BookingForm = ({ bookingId }: BookingFormProps) => {
         totalAmount: 5000,
         isPaymentCollected: false,
         isCancelled: false,
+        bookingDate: new Date(),
       };
 
   const form = useForm<FormValues>({
@@ -133,6 +150,49 @@ const BookingForm = ({ bookingId }: BookingFormProps) => {
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
             <div>
+              <h3 className="text-lg font-medium mb-3">Booking Details</h3>
+              <Separator className="mb-6" />
+              <div className="grid gap-6 md:grid-cols-2">
+                <FormField
+                  control={form.control}
+                  name="bookingDate"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-col">
+                      <FormLabel>Booking Date</FormLabel>
+                      <Popover>
+                        <PopoverTrigger asChild>
+                          <FormControl>
+                            <Button
+                              variant="outline"
+                              className="w-full pl-3 text-left font-normal flex justify-between items-center"
+                            >
+                              {field.value ? (
+                                format(field.value, "PPP")
+                              ) : (
+                                <span>Pick a date</span>
+                              )}
+                              <Calendar className="h-4 w-4 opacity-50" />
+                            </Button>
+                          </FormControl>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-auto p-0" align="start">
+                          <CalendarComponent
+                            mode="single"
+                            selected={field.value}
+                            onSelect={field.onChange}
+                            initialFocus
+                            className="p-3 pointer-events-auto"
+                          />
+                        </PopoverContent>
+                      </Popover>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+            </div>
+            
+            <div>
               <h3 className="text-lg font-medium mb-3">Passenger Details</h3>
               <Separator className="mb-6" />
               <div className="grid gap-6 md:grid-cols-2">
@@ -143,7 +203,10 @@ const BookingForm = ({ bookingId }: BookingFormProps) => {
                     <FormItem>
                       <FormLabel>Passenger Name</FormLabel>
                       <FormControl>
-                        <Input placeholder="Enter full name" {...field} />
+                        <div className="relative">
+                          <User className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                          <Input className="pl-10" placeholder="Enter full name" {...field} />
+                        </div>
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -157,7 +220,10 @@ const BookingForm = ({ bookingId }: BookingFormProps) => {
                     <FormItem>
                       <FormLabel>Contact Number</FormLabel>
                       <FormControl>
-                        <Input placeholder="Enter mobile number" {...field} />
+                        <div className="relative">
+                          <Phone className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                          <Input className="pl-10" placeholder="Enter mobile number" {...field} />
+                        </div>
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -166,12 +232,15 @@ const BookingForm = ({ bookingId }: BookingFormProps) => {
                 
                 <FormField
                   control={form.control}
-                  name="seatNumber"
+                  name="aadharCardNumber"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Seat Number</FormLabel>
+                      <FormLabel>Aadhar Card Number</FormLabel>
                       <FormControl>
-                        <Input placeholder="e.g. A1, B2" {...field} />
+                        <div className="relative">
+                          <IdCard className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                          <Input className="pl-10" placeholder="Enter Aadhar number" {...field} />
+                        </div>
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -185,9 +254,117 @@ const BookingForm = ({ bookingId }: BookingFormProps) => {
                     <FormItem>
                       <FormLabel>Relative Contact Number</FormLabel>
                       <FormControl>
-                        <Input placeholder="Optional emergency contact" {...field} />
+                        <div className="relative">
+                          <Users className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                          <Input className="pl-10" placeholder="Optional emergency contact" {...field} />
+                        </div>
                       </FormControl>
                       <FormDescription>Optional emergency contact number</FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                
+                <FormField
+                  control={form.control}
+                  name="address"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Address</FormLabel>
+                      <FormControl>
+                        <div className="relative">
+                          <MapPin className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                          <Input className="pl-10" placeholder="Enter address" {...field} />
+                        </div>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                
+                <FormField
+                  control={form.control}
+                  name="age"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Age</FormLabel>
+                      <FormControl>
+                        <div className="relative">
+                          <Cake className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                          <Input type="number" className="pl-10" placeholder="Enter age" {...field} />
+                        </div>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                
+                <FormField
+                  control={form.control}
+                  name="gender"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Gender</FormLabel>
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select gender" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="M">Male</SelectItem>
+                          <SelectItem value="F">Female</SelectItem>
+                          <SelectItem value="Other">Other</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                
+                <FormField
+                  control={form.control}
+                  name="bloodGroup"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Blood Group</FormLabel>
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select blood group" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="A+">A+</SelectItem>
+                          <SelectItem value="A-">A-</SelectItem>
+                          <SelectItem value="B+">B+</SelectItem>
+                          <SelectItem value="B-">B-</SelectItem>
+                          <SelectItem value="AB+">AB+</SelectItem>
+                          <SelectItem value="AB-">AB-</SelectItem>
+                          <SelectItem value="O+">O+</SelectItem>
+                          <SelectItem value="O-">O-</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+            </div>
+            
+            <div>
+              <h3 className="text-lg font-medium mb-3">Seat Information</h3>
+              <Separator className="mb-6" />
+              <div className="grid gap-6 md:grid-cols-2">
+                <FormField
+                  control={form.control}
+                  name="seatNumber"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Seat Number</FormLabel>
+                      <FormControl>
+                        <Input placeholder="e.g. A1, B2" {...field} />
+                      </FormControl>
                       <FormMessage />
                     </FormItem>
                   )}
@@ -206,7 +383,10 @@ const BookingForm = ({ bookingId }: BookingFormProps) => {
                     <FormItem>
                       <FormLabel>Total Amount</FormLabel>
                       <FormControl>
-                        <Input type="number" {...field} />
+                        <div className="relative">
+                          <DollarSign className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                          <Input type="number" className="pl-10" {...field} />
+                        </div>
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -220,7 +400,10 @@ const BookingForm = ({ bookingId }: BookingFormProps) => {
                     <FormItem>
                       <FormLabel>Advance Paid</FormLabel>
                       <FormControl>
-                        <Input type="number" {...field} />
+                        <div className="relative">
+                          <DollarSign className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                          <Input type="number" className="pl-10" {...field} />
+                        </div>
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -234,7 +417,10 @@ const BookingForm = ({ bookingId }: BookingFormProps) => {
                     <FormItem>
                       <FormLabel>Discount Given</FormLabel>
                       <FormControl>
-                        <Input type="number" {...field} />
+                        <div className="relative">
+                          <DollarSign className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                          <Input type="number" className="pl-10" {...field} />
+                        </div>
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -243,12 +429,15 @@ const BookingForm = ({ bookingId }: BookingFormProps) => {
                 
                 <div>
                   <FormLabel>Remaining Amount</FormLabel>
-                  <Input 
-                    type="number" 
-                    value={remainingAmount} 
-                    disabled 
-                    className={`bg-muted ${remainingAmount > 0 ? 'border-yellow-300 text-yellow-700' : 'border-green-300 text-green-700'}`}
-                  />
+                  <div className="relative">
+                    <DollarSign className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                    <Input 
+                      type="number" 
+                      value={remainingAmount} 
+                      disabled 
+                      className={`pl-10 bg-muted ${remainingAmount > 0 ? 'border-yellow-300 text-yellow-700' : 'border-green-300 text-green-700'}`}
+                    />
+                  </div>
                   <FormDescription>Auto-calculated from total, advance, and discount</FormDescription>
                 </div>
                 

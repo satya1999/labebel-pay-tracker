@@ -5,6 +5,7 @@ import { TableRow, TableCell } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Booking } from '@/types';
+import { format } from 'date-fns';
 
 interface BookingTableRowProps {
   booking: Booking;
@@ -12,6 +13,11 @@ interface BookingTableRowProps {
 }
 
 const BookingTableRow = ({ booking, index }: BookingTableRowProps) => {
+  // Format booking date if available
+  const formattedBookingDate = booking.bookingDate 
+    ? new Date(booking.bookingDate).toLocaleDateString() 
+    : '-';
+
   return (
     <TableRow key={booking.id}>
       <TableCell className="font-medium">{index + 1}</TableCell>
@@ -20,15 +26,16 @@ const BookingTableRow = ({ booking, index }: BookingTableRowProps) => {
           {booking.passengerName}
         </Link>
       </TableCell>
-      <TableCell className="hidden md:table-cell">{booking.contactNumber}</TableCell>
+      <TableCell className="hidden md:table-cell">{formattedBookingDate}</TableCell>
       <TableCell className="hidden md:table-cell">{booking.seatNumber}</TableCell>
+      <TableCell className="hidden lg:table-cell">{booking.contactNumber}</TableCell>
       <TableCell className="text-right">
-        <div>₹{booking.totalAmount}</div>
-        <div className="text-xs text-muted-foreground">
-          {booking.advancePaid > 0 ? `₹${booking.advancePaid} paid` : 'No advance'}
-        </div>
+        ₹{booking.advancePaid}
       </TableCell>
-      <TableCell className="hidden lg:table-cell">
+      <TableCell className="text-right hidden xl:table-cell">
+        ₹{booking.remainingAmount}
+      </TableCell>
+      <TableCell className="hidden xl:table-cell">
         {booking.isPaymentCollected ? (
           <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
             Collected
