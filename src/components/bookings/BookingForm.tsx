@@ -54,6 +54,7 @@ interface BookingFormProps {
 const BookingForm = ({ bookingId }: BookingFormProps) => {
   const navigate = useNavigate();
   const isEditing = Boolean(bookingId);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   
   // For a real app, you would fetch the booking data if editing
   const defaultValues: Partial<FormValues> = isEditing 
@@ -112,6 +113,7 @@ const BookingForm = ({ bookingId }: BookingFormProps) => {
 
   async function onSubmit(data: FormValues) {
     try {
+      setIsSubmitting(true);
       // Calculate remaining amount
       const remaining = data.totalAmount - data.advancePaid - data.discountGiven;
       
@@ -172,6 +174,8 @@ const BookingForm = ({ bookingId }: BookingFormProps) => {
         description: error.message || "An unexpected error occurred",
         duration: 5000,
       });
+    } finally {
+      setIsSubmitting(false);
     }
   }
 
@@ -203,12 +207,19 @@ const BookingForm = ({ bookingId }: BookingFormProps) => {
                 variant="outline"
                 onClick={() => navigate("/bookings")}
                 className="flex items-center gap-2"
+                disabled={isSubmitting}
               >
                 <ArrowLeft className="h-4 w-4" /> Back to Bookings
               </Button>
-              <Button type="submit" className="flex items-center gap-2">
+              <Button 
+                type="submit" 
+                className="flex items-center gap-2"
+                disabled={isSubmitting}
+              >
                 <Save className="h-4 w-4" />
-                {isEditing ? "Update Booking" : "Create Booking"}
+                {isSubmitting ? 
+                  `${isEditing ? "Updating" : "Creating"}...` : 
+                  isEditing ? "Update Booking" : "Create Booking"}
               </Button>
             </div>
           </form>

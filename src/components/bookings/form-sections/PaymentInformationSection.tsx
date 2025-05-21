@@ -7,7 +7,7 @@ import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
 import { DollarSign, Upload, X, FileImage, CheckCircle, AlertCircle } from 'lucide-react';
 import { Control } from 'react-hook-form';
-import { useToast } from "@/hooks/use-toast";
+import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import FormSection from './FormSection';
 
@@ -20,7 +20,6 @@ const PaymentInformationSection = ({
   control, 
   remainingAmount 
 }: PaymentInformationSectionProps) => {
-  const { toast } = useToast();
   const [isUploading, setIsUploading] = useState(false);
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
   const [uploadedUrl, setUploadedUrl] = useState<string | null>(null);
@@ -71,6 +70,7 @@ const PaymentInformationSection = ({
       }
       
       if (data) {
+        // Get public URL for the uploaded file
         const { data: { publicUrl } } = supabase.storage
           .from('payment_screenshots')
           .getPublicUrl(data.path);
