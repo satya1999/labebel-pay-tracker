@@ -9,7 +9,161 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      [_ in never]: never
+      bookings: {
+        Row: {
+          aadhar_card_number: string | null
+          address: string | null
+          advance_paid: number
+          age: number | null
+          blood_group: string | null
+          booking_date: string | null
+          collected_at: string | null
+          collected_by: string | null
+          contact_number: string
+          created_at: string
+          discount_given: number
+          gender: string | null
+          id: string
+          is_cancelled: boolean
+          is_payment_collected: boolean
+          notes: string | null
+          passenger_name: string
+          payment_mode: string
+          payment_transferred_to: string
+          relative_contact_number: string | null
+          remaining_amount: number
+          screenshot_url: string | null
+          seat_number: string
+          total_amount: number
+          trip_id: string
+          updated_at: string
+        }
+        Insert: {
+          aadhar_card_number?: string | null
+          address?: string | null
+          advance_paid?: number
+          age?: number | null
+          blood_group?: string | null
+          booking_date?: string | null
+          collected_at?: string | null
+          collected_by?: string | null
+          contact_number: string
+          created_at?: string
+          discount_given?: number
+          gender?: string | null
+          id?: string
+          is_cancelled?: boolean
+          is_payment_collected?: boolean
+          notes?: string | null
+          passenger_name: string
+          payment_mode: string
+          payment_transferred_to: string
+          relative_contact_number?: string | null
+          remaining_amount?: number
+          screenshot_url?: string | null
+          seat_number: string
+          total_amount: number
+          trip_id: string
+          updated_at?: string
+        }
+        Update: {
+          aadhar_card_number?: string | null
+          address?: string | null
+          advance_paid?: number
+          age?: number | null
+          blood_group?: string | null
+          booking_date?: string | null
+          collected_at?: string | null
+          collected_by?: string | null
+          contact_number?: string
+          created_at?: string
+          discount_given?: number
+          gender?: string | null
+          id?: string
+          is_cancelled?: boolean
+          is_payment_collected?: boolean
+          notes?: string | null
+          passenger_name?: string
+          payment_mode?: string
+          payment_transferred_to?: string
+          relative_contact_number?: string | null
+          remaining_amount?: number
+          screenshot_url?: string | null
+          seat_number?: string
+          total_amount?: number
+          trip_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bookings_trip_id_fkey"
+            columns: ["trip_id"]
+            isOneToOne: false
+            referencedRelation: "trips"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          created_at: string
+          id: string
+          name: string
+          role: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id: string
+          name: string
+          role: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          name?: string
+          role?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      trips: {
+        Row: {
+          created_at: string
+          departure_date: string
+          destination: string
+          id: string
+          name: string
+          price: number
+          return_date: string
+          total_seats: number
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          departure_date: string
+          destination: string
+          id?: string
+          name: string
+          price: number
+          return_date: string
+          total_seats: number
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          departure_date?: string
+          destination?: string
+          id?: string
+          name?: string
+          price?: number
+          return_date?: string
+          total_seats?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

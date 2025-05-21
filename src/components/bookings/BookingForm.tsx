@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { CalendarPlus } from 'lucide-react';
+import { supabase } from "@/integrations/supabase/client";
 
 import {
   BookingDetailsSection,
@@ -34,6 +35,7 @@ const formSchema = z.object({
   isPaymentCollected: z.boolean().default(false),
   isCancelled: z.boolean().default(false),
   notes: z.string().optional(),
+  screenshotUrl: z.string().optional().nullable(),
   // New fields
   bookingDate: z.date().optional(),
   aadharCardNumber: z.string().optional(),
@@ -68,6 +70,7 @@ const BookingForm = ({ bookingId }: BookingFormProps) => {
         isPaymentCollected: false,
         isCancelled: false,
         notes: "",
+        screenshotUrl: null,
         bookingDate: new Date(),
         aadharCardNumber: "",
         address: "",
@@ -82,6 +85,7 @@ const BookingForm = ({ bookingId }: BookingFormProps) => {
         isPaymentCollected: false,
         isCancelled: false,
         bookingDate: new Date(),
+        screenshotUrl: null,
       };
 
   const form = useForm<FormValues>({
@@ -106,18 +110,69 @@ const BookingForm = ({ bookingId }: BookingFormProps) => {
     return () => subscription.unsubscribe();
   }, [form]);
 
-  function onSubmit(data: FormValues) {
-    // In a real app, you would send this data to your backend
-    console.log(data);
-    
-    toast.success(
-      isEditing ? "Booking updated successfully" : "Booking created successfully", {
-        description: `Passenger: ${data.passengerName}, Seat: ${data.seatNumber}`,
-        duration: 3000,
+  async function onSubmit(data: FormValues) {
+    try {
+      // Calculate remaining amount
+      const remaining = data.totalAmount - data.advancePaid - data.discountGiven;
+      
+      // Prepare booking data for Supabase
+      const bookingData = {
+        trip_id: "trip-1", // For now using a default trip ID, in a real app this would be selected
+        passenger_name: data.passengerName,
+        contact_number: data.contactNumber,
+        seat_number: data.seatNumber,
+        advance_paid: data.advancePaid,
+        total_amount: data.totalAmount,
+        remaining_amount: remaining,
+        discount_given: data.discountGiven,
+        relative_contact_number: data.relativeContactNumber || null,
+        payment_mode: data.paymentMode,
+        payment_transferred_to: data.paymentTransferredTo,
+        is_cancelled: data.isCancelled,
+        is_payment_collected: data.isPaymentCollected,
+        notes: data.notes || null,
+        booking_date: data.bookingDate?.toISOString() || new Date().toISOString(),
+        aadhar_card_number: data.aadharCardNumber || null,
+        address: data.address || null,
+        age: data.age || null,
+        gender: data.gender || null,
+        blood_group: data.bloodGroup || null,
+        screenshot_url: data.screenshotUrl || null,
+      };
+
+      // Insert or update booking in Supabase
+      let response;
+      
+      if (isEditing) {
+        response = await supabase
+          .from('bookings')
+          .update(bookingData)
+          .eq('id', bookingId);
+      } else {
+        response = await supabase
+          .from('bookings')
+          .insert([bookingData]);
       }
-    );
-    
-    navigate("/bookings");
+
+      if (response.error) {
+        throw response.error;
+      }
+      
+      toast.success(
+        isEditing ? "Booking updated successfully" : "Booking created successfully", {
+          description: `Passenger: ${data.passengerName}, Seat: ${data.seatNumber}`,
+          duration: 3000,
+        }
+      );
+      
+      navigate("/bookings");
+    } catch (error: any) {
+      console.error("Error saving booking:", error);
+      toast.error("Failed to save booking", {
+        description: error.message || "An unexpected error occurred",
+        duration: 5000,
+      });
+    }
   }
 
   return (
