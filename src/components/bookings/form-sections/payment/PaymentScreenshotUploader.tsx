@@ -1,10 +1,10 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { FormField, FormItem, FormLabel, FormControl, FormDescription, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { FileImage, X, CheckCircle, AlertCircle } from 'lucide-react';
-import { Control } from 'react-hook-form';
+import { Upload, X } from 'lucide-react';
+import { Control, useWatch } from 'react-hook-form';
 import { usePaymentScreenshotUpload } from './usePaymentScreenshotUpload';
 
 interface PaymentScreenshotUploaderProps {
@@ -12,114 +12,90 @@ interface PaymentScreenshotUploaderProps {
 }
 
 const PaymentScreenshotUploader = ({ control }: PaymentScreenshotUploaderProps) => {
-  const {
-    isUploading,
-    uploadedFile,
-    uploadedUrl,
-    uploadError,
-    handleFileChange,
-    handleRemoveFile
-  } = usePaymentScreenshotUpload(control);
-
+  const { isUploading, handleUpload } = usePaymentScreenshotUpload();
+  const screenshotUrl = useWatch({ control, name: 'screenshotUrl' });
+  const [previewUrl, setPreviewUrl] = useState<string | null>(screenshotUrl);
+  
+  const handleFileChange = async (
+    event: React.ChangeEvent<HTMLInputElement>,
+    onChange: (value: string) => void
+  ) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+    
+    // Create a preview
+    setPreviewUrl(URL.createObjectURL(file));
+    
+    // Upload the file
+    const uploadedUrl = await handleUpload(file);
+    if (uploadedUrl) {
+      onChange(uploadedUrl);
+    }
+  };
+  
+  const handleRemove = (onChange: (value: null) => void) => {
+    setPreviewUrl(null);
+    onChange(null);
+  };
+  
   return (
-    <FormField
-      control={control}
-      name="screenshotUrl"
-      render={({ field }) => (
-        <FormItem className="col-span-2">
-          <FormLabel>Payment Screenshot</FormLabel>
-          <FormControl>
-            <div className="border-2 border-dashed rounded-lg p-4 relative">
-              {!uploadedFile && !uploadedUrl && (
-                <div className="text-center">
-                  <FileImage className="h-8 w-8 mx-auto mb-2 text-muted-foreground" />
-                  <div className="space-y-2">
-                    <p className="text-sm text-muted-foreground">Upload a screenshot of payment confirmation</p>
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      className="relative"
+    <div className="col-span-2">
+      <FormField
+        control={control}
+        name="screenshotUrl"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Payment Screenshot</FormLabel>
+            <FormControl>
+              <div className="space-y-4">
+                {!previewUrl ? (
+                  <div className="flex items-center justify-center border-2 border-dashed border-slate-200 dark:border-slate-700 rounded-lg p-8">
+                    <Input
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      id="payment-screenshot"
+                      onChange={(e) => handleFileChange(e, field.onChange)}
                       disabled={isUploading}
+                    />
+                    <label 
+                      htmlFor="payment-screenshot" 
+                      className="flex flex-col items-center justify-center cursor-pointer"
                     >
-                      {isUploading ? "Uploading..." : "Select Image"}
-                      <Input
-                        type="file"
-                        className="absolute inset-0 opacity-0 cursor-pointer"
-                        accept="image/*"
-                        onChange={handleFileChange}
-                        disabled={isUploading}
-                      />
-                    </Button>
+                      <Upload className="h-10 w-10 text-slate-400 mb-2" />
+                      <span className="text-sm text-slate-500">
+                        {isUploading ? "Uploading..." : "Click to upload payment screenshot"}
+                      </span>
+                    </label>
                   </div>
-                </div>
-              )}
-
-              {(uploadedFile || uploadedUrl) && !uploadError && (
-                <div className="text-center">
-                  <div className="relative mb-2">
-                    {uploadedUrl && (
-                      <img 
-                        src={uploadedUrl} 
-                        alt="Payment screenshot" 
-                        className="max-h-40 mx-auto object-contain rounded-md"
-                      />
-                    )}
-                    {!uploadedUrl && uploadedFile && (
-                      <div className="bg-muted p-4 rounded-md text-center">
-                        <FileImage className="h-8 w-8 mx-auto mb-2" />
-                        <p className="text-sm font-medium">{uploadedFile.name}</p>
-                      </div>
-                    )}
+                ) : (
+                  <div className="relative">
+                    <img 
+                      src={previewUrl} 
+                      alt="Payment screenshot" 
+                      className="max-h-64 rounded-lg mx-auto"
+                    />
                     <Button
                       type="button"
-                      variant="ghost"
+                      variant="destructive"
                       size="icon"
-                      className="absolute top-0 right-0 rounded-full bg-destructive/10 hover:bg-destructive/20"
-                      onClick={handleRemoveFile}
+                      className="absolute top-2 right-2"
+                      onClick={() => handleRemove(field.onChange)}
                     >
                       <X className="h-4 w-4" />
                     </Button>
                   </div>
-                  <div className="flex items-center justify-center gap-1 text-xs text-green-600">
-                    <CheckCircle className="h-3.5 w-3.5" />
-                    <span>Screenshot uploaded successfully</span>
-                  </div>
-                </div>
-              )}
-
-              {uploadError && (
-                <div className="text-center">
-                  <div className="flex items-center justify-center gap-1 text-xs text-destructive">
-                    <AlertCircle className="h-3.5 w-3.5" />
-                    <span>{uploadError}</span>
-                  </div>
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    className="relative mt-2"
-                  >
-                    Try Again
-                    <Input
-                      type="file"
-                      className="absolute inset-0 opacity-0 cursor-pointer"
-                      accept="image/*"
-                      onChange={handleFileChange}
-                    />
-                  </Button>
-                </div>
-              )}
-              <Input type="hidden" {...field} />
-            </div>
-          </FormControl>
-          <FormDescription>
-            Upload a screenshot of payment confirmation (max 5MB)
-          </FormDescription>
-          <FormMessage />
-        </FormItem>
-      )}
-    />
+                )}
+              </div>
+            </FormControl>
+            <FormDescription>
+              Upload a screenshot of the payment confirmation (optional)
+            </FormDescription>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+    </div>
   );
 };
 

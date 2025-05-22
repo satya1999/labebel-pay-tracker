@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { FormField, FormItem, FormLabel, FormDescription, FormControl } from "@/components/ui/form";
+import { FormField, FormItem, FormLabel, FormControl, FormDescription } from "@/components/ui/form";
 import { Switch } from "@/components/ui/switch";
 import { Control } from 'react-hook-form';
 
@@ -10,16 +10,16 @@ interface PaymentStatusTogglesProps {
 
 const PaymentStatusToggles = ({ control }: PaymentStatusTogglesProps) => {
   return (
-    <div className="md:col-span-2 grid gap-6 md:grid-cols-2 mt-6">
+    <>
       <FormField
         control={control}
         name="isPaymentCollected"
         render={({ field }) => (
-          <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4 shadow-sm">
+          <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
             <div className="space-y-0.5">
               <FormLabel className="text-base">Payment Collected</FormLabel>
               <FormDescription>
-                Mark if payment has been fully collected
+                Mark if the payment has been collected
               </FormDescription>
             </div>
             <FormControl>
@@ -36,11 +36,11 @@ const PaymentStatusToggles = ({ control }: PaymentStatusTogglesProps) => {
         control={control}
         name="isCancelled"
         render={({ field }) => (
-          <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4 shadow-sm">
+          <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
             <div className="space-y-0.5">
-              <FormLabel className="text-base">Cancelled</FormLabel>
+              <FormLabel className="text-base">Booking Cancelled</FormLabel>
               <FormDescription>
-                Mark if this booking has been cancelled
+                Mark if the booking has been cancelled
               </FormDescription>
             </div>
             <FormControl>
@@ -52,7 +52,7 @@ const PaymentStatusToggles = ({ control }: PaymentStatusTogglesProps) => {
           </FormItem>
         )}
       />
-    </div>
+    </>
   );
 };
 
